@@ -1,0 +1,24 @@
+# Exclude the other repository as requested
+Final_Year_Research/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.pdf
+*.gz
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+
+# Data and Logs
+*.csv
+# Only include the specific CSV requested
+!Town01_CITY_STUNT_20251117_150514.csv
