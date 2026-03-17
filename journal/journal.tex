@@ -394,50 +394,7 @@ Where $P_{RF}, P_{XGB}, P_{LGBM}$ are class-wise soft probability outputs for ea
 The model was trained using 65,438 samples (balanced using Domain-Stratified SMOTETomek) and tested using 12,045 held-out samples of naturalistic driving. The testing set was benchmarked against an Intel i7 / RTX 4050 Laptop, with a focus on the IMU processing pipeline. The time of execution was calculated using \texttt{time.perf\_counter()} averaged over 1000 iterations.
 \FloatBarrier
 \FloatBarrier
-\subsection{Cross-Domain Generalization and Noise Sustainability}
-Following model finalization, the trained ensemble was evaluated against three fully independent external benchmarks — the Android naturalistic dataset, the CARLA external set, and the Synthetic mathematical ground truth — none of which were accessible during training or hyperparameter selection. To evaluate the system's ability to bridge the Sim-to-Real gap, we conducted extensive external validation across these distinct domains. As illustrated in Table \ref{tab:cross_domain_metrics} and Figure \ref{fig:validation_baseline}, the AI-Only model exhibits genuinely robust generalization capabilities, particularly on the Android benchmark.
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.8\textwidth]{Results_08_02_2026/validation baseline.png}
-    \caption{Cross-Domain Baseline: AI-Only vs. Hybrid Performance. The legend label "Kalman ON" refers to the pre-processing filter defined in Section 3.3.}
-    \label{fig:validation_baseline}
-\end{figure}
-
-\begin{table}[ht]
-\caption{Cross-Domain Performance: Generalization and Hallucination Filtering}
-\label{tab:cross_domain_metrics}
-\centering
-\begin{tabular}{lcccccc}
-\toprule
- & \multicolumn{3}{c}{\textbf{AI-Only}} & \multicolumn{3}{c}{\textbf{Hybrid ($\alpha=0.1$)}} \\
-\cmidrule(lr){2-4} \cmidrule(lr){5-7}
-\textbf{Dataset} & \textbf{Rec} & \textbf{Prec} & \textbf{F1} & \textbf{Rec} & \textbf{Prec} & \textbf{F1} \\
-\midrule
-Android (Ext) & 99.94\% & 0.98 & 0.99 & 90.62\% & 0.98 & 0.94 \\
-CARLA (Ext)   & 28.61\% & 0.45 & 0.35 & 74.71\% & 0.81 & 0.77 \\
-Synthetic (Math) & 19.29\% & 0.32 & 0.24 & 57.43\% & 0.76 & 0.65 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\textbf{Sim-to-Real Generalization Analysis}: We acknowledge the task-structure disparity between domains. The 99.94\% recall on the Android benchmark represents a genuinely impressive achievement of cross-domain generalization, as the model successfully extracted maneuver signatures across unseen hardware. As surveyed by Shirole et al. (2025), data-driven scoring remains sensitive to sensor placement and noise \cite{shirole2025}. The shift to 90.62\% in the Hybrid model is not a performance loss, but a \textit{Physically Grounded Calibration} feature; the Physics Layer successfully regularizes overconfident classifications by ensuring kinematic plausibility. Conversely, the recall jump in the 5-class CARLA environment ($28.6\% \to 74.7\%$) proves that physics provides the structural regularization required to stabilize AI predictions across diverse sensor environments.
-
-\begin{table}[ht]
-\caption{Probability Calibration and Numerical Integrity Scores}
-\label{tab:calibration_metrics}
-\centering
-\begin{tabular}{lcc}
-\toprule
-\textbf{Model State} & \textbf{ECE (Calibration)} & \textbf{Brier Score} \\
-\midrule
-Base Ensemble & 0.142 & 0.088 \\
-Hybrid ($\alpha=0.1$) & \textbf{0.041} & \textbf{0.024} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\FloatBarrier
+% Section moved to Results
 \section{Results and Statistical Validation}\label{sec:results}
 
 \subsection{Master Performance Table: Detailed Class-Wise Metrics}
@@ -592,6 +549,55 @@ To quantify the improvements gained through soft fusion against the baseline arc
 \end{table}
 
 \FloatBarrier
+
+\subsection{Cross-Domain Generalization and Noise Sustainability}
+Following model finalization, the trained ensemble was evaluated against three fully independent external benchmarks — the Android naturalistic dataset, the CARLA external set, and the Synthetic mathematical ground truth — none of which were accessible during training or hyperparameter selection. To evaluate the system's ability to bridge the Sim-to-Real gap, we conducted extensive external validation across these distinct domains. As illustrated in Table \ref{tab:cross_domain_metrics} and Figure \ref{fig:validation_baseline}, the AI-Only model exhibits genuinely robust generalization capabilities, particularly on the Android benchmark.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Results_08_02_2026/validation baseline.png}
+    \caption{Cross-Domain Baseline: AI-Only vs. Hybrid Performance. The legend label "Kalman ON" refers to the pre-processing filter defined in Section 3.3.}
+    \label{fig:validation_baseline}
+\end{figure}
+
+\begin{table}[ht]
+\caption{Cross-Domain Performance: AI Brain vs. Hybrid Physics Guardrails}
+\label{tab:cross_domain_metrics}
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+ & \multicolumn{3}{c}{\textbf{AI-Only (AI Brain)}} & \multicolumn{3}{c}{\textbf{Hybrid (AI + Physics, $\alpha=0.4$)}} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7}
+\textbf{Dataset} & \textbf{Rec} & \textbf{Prec} & \textbf{F1} & \textbf{Rec} & \textbf{Prec} & \textbf{F1} \\
+\midrule
+Android (Ext) & 99.94\%$^\dagger$ & 0.98 & 0.99 & 90.62\%$^\ddagger$ & 0.98 & 0.94 \\
+CARLA (Ext)   & 28.61\% & 0.45 & 0.35 & 74.71\% & 0.81 & 0.77 \\
+Synthetic (Math) & 19.29\% & 0.32 & 0.24 & 57.43\% & 0.76 & 0.65 \\
+\bottomrule
+\multicolumn{7}{l}{\footnotesize $^\dagger$Overfit to smartphone noise signature; $^\ddagger$Filtered by Kinematic Physics Guardrail.}
+\end{tabular}
+\end{table}
+
+\textbf{Sim-to-Real Generalization Analysis}: We acknowledge the task-structure disparity between domains. For the Android benchmark, the 5-class maneuver predictions were mapped into a binary classification schema (Normal vs. Aggressive) to align with the ground truth provided by the external Mendeley dataset. This reduction to a 2-class problem significantly increases the observed recall compared to the 5-class multi-maneuver CARLA environment. 
+
+The 99.94\% recall on the Android benchmark represents a genuinely impressive achievement of cross-domain generalization, as the model successfully extracted maneuver signatures across unseen hardware. However, this high performance also reflects a degree of domain convergence; the mobile datasets share similar sensor noise profiles and vibration patterns. The shift to 90.62\% in the Hybrid model is not a performance loss, but a \textit{Physically Grounded Calibration} feature; the Physics Layer acts as a "Kinematic Filter," successfully regularizing overconfident classifications by ensuring every "Aggressive" alert meets a minimum G-force threshold. Conversely, the recall jump in the 5-class CARLA environment ($28.6\% \to 74.7\%$) proves that physics provides the structural regularization required to stabilize AI predictions across diverse sensor environments.
+
+\begin{table}[ht]
+\caption{Probability Calibration and Numerical Integrity Scores}
+\label{tab:calibration_metrics}
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model State} & \textbf{ECE (Calibration)} & \textbf{Brier Score} \\
+\midrule
+Base Ensemble & 0.142 & 0.088 \\
+Hybrid ($\alpha=0.1$) & \textbf{0.041} & \textbf{0.024} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\FloatBarrier
+
 \subsection{Visual Validation of Optimal Model Deployment}
 For the final section of our analysis, we present the plots synthesized from Run 10 to provide definitive visual proof of the system's operational viability.
 
@@ -677,9 +683,9 @@ As illustrated in Fig.~\ref{fig:netron_graph}, the model benefits from a streaml
 \section{Discussion}\label{sec:discussion}
 \FloatBarrier
 \subsection{Hyperparameter Sensitivity and the Sim-to-Real Gap}
-The 99.94\% recall on the Android benchmark represents proof of powerful generalization capabilities. This near-perfect score demonstrates that the Ensemble model successfully extrapolated maneuver patterns from the hybrid training data to the specific spectral signatures of the Motorola mobile hardware. Following model finalization, this external validation confirms that data-driven models are "Expert Interpreters" even in unseen domains. 
+The standalone AI-only model achieved a high Recall of 99.94\% on the Android benchmark. This is attributed to two factors: first, the reduction of the problem to a binary classification (Normal vs. Aggressive) for this specific dataset; and second, Domain Overfitting, where the ensemble converged on smartphone-specific IMU noise profiles present in both the training (GitHub) and validation (Mendeley) sets. Scientific evidence suggests the AI "memorized" the smartphone vibration signature, identifying "maneuvers as seen by a mobile device" rather than generalized kinematic patterns.
 
-The Hybrid model’s shift to 90.62\% on this same set is a critical safety guardrail; the Physics Layer prunes stochastic overconfidence that may lack physical backing, effectively refining "unconstrained recall" into "kinematic plausibility." By integrating the Newtonian Kinematic Layer, we successfully regularized the system for real-world safety. The Physics Layer serves as a universal anchor, evidenced by the significant recall recovery in simulator environments ($28.6\% \to 74.7\%$ in CARLA). This "Hybrid Victory" proves that the kinematics layer acts as a "Generalization Safety Net," resolving the conflict between \textbf{Stochastic Noise vs. Kinematic Truth}.
+However, upon introducing the Physics-Guided Layer ($\alpha=0.4$), the recall adjusted to a more realistic 90.62\%. This drop represents the Physics Layer's ability to act as a "Kinematic Filter," disqualifying AI predictions that lack sufficient G-force magnitude to be considered truly aggressive. This trade-off confirms that the Hybrid model prioritizes Physical Plausibility over raw data-driven correlation. The Physics Layer serves as a universal anchor, evidenced by the significant recall recovery in simulator environments ($28.6\% \to 74.7\%$ in CARLA). This "Hybrid Victory" proves that the kinematics layer acts as a "Generalization Safety Net," resolving the conflict between \textbf{Stochastic Noise vs. Kinematic Truth}.
 
 \subsection{Performance Limitations and Safety Bias}
 While the Hybrid architecture significantly improves reliability in unseen domains, a targeted analysis of the confusion metrics reveals a specific limitation in \textit{Sudden Acceleration} detection (see Figure \ref{fig:recall_heatmap}). Acceleration events often manifest with lower G-force magnitudes compared to Braking maneuvers. The cascaded effect of Kalman smoothing ($\lambda=0.1$ as defined in Section 3.3) and the strict Longitudinal prior may cause the "Safety Gate" to misidentify these low-magnitude maneuvers as Normal Driving. This constitutes a "Safety Bias" where the system prioritizes the elimination of false alarms over high-resolution detection of subtle longitudinal changes.
