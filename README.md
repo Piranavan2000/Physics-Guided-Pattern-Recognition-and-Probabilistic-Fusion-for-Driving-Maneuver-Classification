@@ -62,16 +62,3 @@ $$ P_{new} = (1 - \alpha) P_{model} + \alpha P_{physics} $$
 1.  **Prepare Environment**: `pip install -r requirements.txt`
 2.  **Partition Data**: `python data_prep.py` (Sequesters the 40% Vault).
 3.  **Run Pipeline**: `python run_model.py` (Training + Fusion + Evaluation).
-
----
-
-## 📝 Citation
-
-```latex
-@article{sathiyavannan2026physics,
-  title={Physics-Guided Pattern Recognition and Probabilistic Fusion for Driving Maneuver Classification},
-  author={Sathiyavannan, Piranavan and Kanagasabai, Thiruthanigesan and Abeywardhana, Lakmini},
-  journal={Department of Information Technology, Sri Lanka Institute of Information Technology},
-  year={2026}
-}
-```
