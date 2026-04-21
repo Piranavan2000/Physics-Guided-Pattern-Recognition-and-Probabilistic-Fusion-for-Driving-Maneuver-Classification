@@ -47,6 +47,38 @@ $$ P_{new} = (1 - \alpha) P_{model} + \alpha P_{physics} $$
 
 ---
 
+## 🔄 Project Workflow
+
+```mermaid
+graph TD
+    subgraph "1. Acquisition & Setup"
+        A1[Install CARLA Simulator] --> A2[Run carla.py]
+        A2 --> A3[(Synthetic Dataset\n.csv)]
+        
+        B1[UAH-DriveSet GitHub] --> B2[Run realworld.ipynb]
+        B2 --> B3[(Real-World Dataset\n.csv)]
+        
+        C1[Mendeley Dataset] --> C2[(External Data Vault\n.csv)]
+    end
+
+    subgraph "2. Processing & Training"
+        A3 & B3 --> D[Preprocessing\nKalman Filter + Denoising]
+        D --> E[Feature Engineering\nSliding Window Signature]
+        E --> F[Hybrid Training\nEnsemble + Physics Fusion]
+    end
+
+    subgraph "3. Validation & Export"
+        F --> G[Cross-Dataset Evaluation]
+        G --> H[External Validation\nSequestered Vault]
+        H --> I[Execute run_model.py]
+        I --> J[[Best Model: master_ensemble.onnx]]
+    end
+
+    style J fill:#4CAF50,stroke:#333,stroke-width:2px,color:#fff
+```
+
+---
+
 ## 📊 Performance Portfolio
 
 | Metric | Base Ensemble | Hybrid (Physics-Guided) | Improvement |
