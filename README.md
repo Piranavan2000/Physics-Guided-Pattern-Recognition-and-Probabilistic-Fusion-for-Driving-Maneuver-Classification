@@ -183,4 +183,36 @@ The `Model_Comparison_08_02_2026 copy.ipynb` Jupyter notebook implements the ful
 | **Inference Latency** | 0.06 ms |
 | **McNemar's χ²** | 28.03 ($p < 0.001$) |
 
+
 ---
+
+### Step 4: Process Real-World Data (UAH-DriveSet)
+
+To validate the model on naturalistic data, use the UAH-DriveSet processor.
+
+#### 1. Download the Dataset
+Download or clone the driver behavior dataset from GitHub:
+[https://github.com/jair-jr/driverBehaviorDataset](https://github.com/jair-jr/driverBehaviorDataset)
+
+#### 2. Prepare the Directory Structure
+Navigate to the `rel world data cpmbine/` directory and set up the raw data:
+1. Create a folder named `raw_data`.
+2. Extract the trip folders (e.g., `16`, `17`, `20`, `21`) from the downloaded dataset into `raw_data/`.
+
+Your structure should look like this:
+```
+rel world data cpmbine/
+├── raw_data/
+│   ├── 16/
+│   │   ├── acelerometro_terra.csv
+│   │   ├── giroscopio_terra.csv
+│   │   └── groundTruth.csv
+│   ├── 17/
+│   └── ...
+└── realworld.ipynb
+```
+
+#### 3. Run the Processor
+1. Open `rel world data cpmbine/realworld.ipynb` in Jupyter.
+2. Execute all cells to process and synchronize the sensor data.
+3. The script will generate `real_world_validation.csv` which is used by the main comparison notebook.
