@@ -22,7 +22,7 @@ To ensure exact replication of results, all experiments were conducted in a stan
 The framework uses a multi-domain dataset strategy:
 *   **Synthetic Domain (CARLA)**: High-resolution telemetry generated in CARLA Simulator (Town04).
 *   **Naturalistic Domain (Real-World)**:
-    *   [UAH-DriveSet](http://www.robesafe.es/personal/eduardo.romera/uah-driveset/): Public naturalistic dataset.
+    *   [UAH-DriveSet](https://github.com/jair-jr/driverBehaviorDataset): Public naturalistic dataset.
     *   [Mendeley Driving Dataset](https://data.mendeley.com/datasets/hb74y9vk88/1): Smartphone-based IMU telemetry.
 
 ### 3. Preprocessing & Denoising
@@ -184,18 +184,3 @@ The `Model_Comparison_08_02_2026 copy.ipynb` Jupyter notebook implements the ful
 | **McNemar's χ²** | 28.03 ($p < 0.001$) |
 
 ---
-
-## 📁 Repository Structure
-
-```
-├── carla.py                        # CARLA data generation script (Step 2)
-├── Model_Comparison_08_02_2026 copy.ipynb  # Full model comparison notebook (Step 3)
-├── run_model.py                    # Production pipeline script
-├── preprocessing.py                # Kalman filter & sliding window module
-├── data_prep.py                    # Vaulted partitioning strategy
-├── requirements.txt                # Exact dependency versions
-├── journal/
-│   ├── journal.tex                 # LaTeX manuscript
-│   └── sn-bibliography.bib         # Bibliography (30 references)
-└── README.md                       # This file
-```
